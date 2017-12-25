@@ -1,0 +1,10 @@
+.slidecontainer {
+    position: absolute;
+    bottom: 0;
+    left: 4%;
+    right: 5%;
+}
+
+.slider {
+    width: 100%;
+}
