@@ -1,54 +1,63 @@
 import './item.css';
 
+const STATE = {
+    SHOWN: 'SHOWN',
+    HIDING: 'HIDING',
+    HIDDEN: 'HIDDEN',
+    SHOWING: 'SHOWING'
+}
+
 export class Item {
     constructor(price) {
-        this.hidden = false;
+        this._state = STATE.SHOWN;
         this.price = price;
         this.root = document.createElement('div');
         this.root.appendChild(document.createTextNode(price));
         this.root.className = 'item';
 
-        this._hideEnd = this._hideEnd.bind(this);
+        this._step = this._step.bind(this);
     }
 
-    _hideEnd() {
-        this.root.className = 'item hidden';
-        this.root.removeEventListener('transitionend', this._hideEnd);
-        this.hidden = true;
+    _step(timestamp) {
+        if (!this._start) this._start = timestamp;
+        let progress = timestamp - this._start;
+        if (this._state === STATE.HIDING) {
+            this.root.style.opacity = Math.max(1 - (progress / 1000), 0);
+            if (progress < 1000) {
+                window.requestAnimationFrame(this._step);
+            } else {
+                this.root.style.display = 'none';
+                this._state = STATE.HIDDEN;
+            }
+        }
+        if (this._state === STATE.SHOWING) {
+            this.root.style.opacity = Math.min(progress / 1000, 1);
+            if (progress < 1000) {
+                window.requestAnimationFrame(this._step);
+            } else {
+                this._state = STATE.SHOWN;
+            }
+        }
     }
 
     hide() {
-        if (!this.hidden) {
-            this.root.className = 'item hiding';
-            this.root.addEventListener('transitionend', this._hideEnd);
+        if (this._state !== STATE.HIDDEN) {
+            if (this._state === STATE.SHOWN) this._start = null;
+            this._state = STATE.HIDING;
+            this.root.style.opacity = '1';
+            
+            window.requestAnimationFrame(this._step);
         }
     }
 
     show() {
-        if (this.hidden) {
-            const that = this;
-            const root = this.root;
-            let start = null;
-            let index = 0;
-
-            function step(timestamp) {
-                if (!start) {
-                    that.hidden = false;
-                    start = timestamp;
-                    let progress = timestamp - start;
-                    root.className = 'item transparent';
-                    window.requestAnimationFrame(step);
-                } else {
-                    if (index === 0) {
-                        index++;
-                        root.className = 'item showing';
-                        
-                    }
-                }
-            }
-
-            root.removeEventListener('transitionend', this._hideEnd);
-            window.requestAnimationFrame(step);
+        if (this._state !== STATE.SHOWN) {
+            if (this._state === STATE.HIDDEN) this._start = null;
+            this._state = STATE.SHOWING;
+            this.root.style.display = null;
+            this.root.style.opacity = '0';
+            
+            window.requestAnimationFrame(this._step);
         }
     }
 }
