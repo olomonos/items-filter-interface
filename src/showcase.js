@@ -20,13 +20,9 @@ export class Showcase {
         for (let i = 0; i < this.items.length; i++) {
             const item = this.items[i];
             if (item.price < this.limit) {
-                // if (!item.hidden) {
                     item.hide();
-                // }
             } else {
-                // if (item.hidden) {
                     item.show();
-                // }
             }
         }
     }

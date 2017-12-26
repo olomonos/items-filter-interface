@@ -1,5 +1,5 @@
 .item {
-    background-color: #888888;
+    background-color: #5e6983;
     color: white;
     width: 50px;
     height: 50px;
@@ -7,21 +7,4 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* transition: opacity 1s; */
 }
-
-/* .transparent {
-    opacity: 0;
-}
-
-.hiding {
-    opacity: 0;
-}
-
-.showing {
-    opacity: 1;
-}
-
-.hidden {
-    display: none;
-} */
